@@ -1,8 +1,8 @@
 <?php
 /*
-Plugin Name: Database Table WP Plugin
-Description: A plugin to dynamically display data from any WordPress database table.
-Version: 1.01
+Plugin Name: Dynamic Database Table Display
+Description: A plugin to dynamically display specific columns from any WordPress database table.
+Version: 1.02
 Author: Anupam Mondal
 */
 
@@ -55,7 +55,13 @@ function display_database_table() {
     $table_name = get_option('db_table_display_table_name');
 
     if ($table_name) {
-        $results = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
+        // Specify the columns you want to display
+        // $columns = ['column1', 'column2', 'column3']; // Update with your column names
+        $columns = ['meta_value']; // Update with your column names
+
+        // Create the SQL query
+        $column_string = implode(', ', $columns);
+        $results = $wpdb->get_results("SELECT $column_string FROM $table_name", ARRAY_A);
 
         if ($results) {
             // Start table
@@ -63,8 +69,8 @@ function display_database_table() {
             $output .= "<tr>";
 
             // Table headers
-            foreach ($results[0] as $key => $value) {
-                $output .= "<th>{$key}</th>";
+            foreach ($columns as $column) {
+                $output .= "<th>{$column}</th>";
             }
 
             $output .= "</tr>";
@@ -72,8 +78,8 @@ function display_database_table() {
             // Table rows
             foreach ($results as $row) {
                 $output .= "<tr>";
-                foreach ($row as $value) {
-                    $output .= "<td>{$value}</td>";
+                foreach ($columns as $column) {
+                    $output .= "<td>{$row[$column]}</td>";
                 }
                 $output .= "</tr>";
             }
