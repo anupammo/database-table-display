@@ -1,20 +1,27 @@
 <?php
 /*
-Plugin Name: Database Table WP Plugin
+Plugin Name: Dynamic Database Table Display
 Description: A plugin to dynamically display data from any WordPress database table.
-Version: 1.0
+Version: 1.01
 Author: Anupam Mondal
 */
 
 // Hook to add the admin menu
 add_action('admin_menu', 'db_table_plugin_menu');
 
+// Hook to add the shortcode
+add_shortcode('display_table', 'display_database_table');
+
+// Hook to enqueue the CSS file
+add_action('wp_enqueue_scripts', 'db_table_plugin_enqueue_styles');
+
+function db_table_plugin_enqueue_styles() {
+    wp_enqueue_style('db-table-plugin-styles', plugin_dir_url(__FILE__) . 'styles.css');
+}
+
 function db_table_plugin_menu() {
     add_menu_page('Database Table Display', 'DB Table Display', 'manage_options', 'db-table-display', 'db_table_plugin_page');
 }
-
-// Hook to add the shortcode
-add_shortcode('display_table', 'display_database_table');
 
 function db_table_plugin_page() {
     global $wpdb;
@@ -52,7 +59,7 @@ function display_database_table() {
 
         if ($results) {
             // Start table
-            $output = "<table border='1'>";
+            $output = "<table class='db-table'>";
             $output .= "<tr>";
 
             // Table headers

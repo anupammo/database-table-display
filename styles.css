@@ -1,0 +1,16 @@
+/* styles.css */
+.db-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.db-table th, .db-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.db-table th {
+    background-color: #f2f2f2;
+    color: #333;
+}
