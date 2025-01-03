@@ -1,46 +1,82 @@
 <?php
 /*
 Plugin Name: Database Table WP Plugin
-Description: A plugin to display database table data as an HTML table.
+Description: A plugin to dynamically display data from any WordPress database table.
 Version: 1.0
 Author: Anupam Mondal
 */
 
-// Hook to add a shortcode
+// Hook to add the admin menu
+add_action('admin_menu', 'db_table_plugin_menu');
+
+function db_table_plugin_menu() {
+    add_menu_page('Database Table Display', 'DB Table Display', 'manage_options', 'db-table-display', 'db_table_plugin_page');
+}
+
+// Hook to add the shortcode
 add_shortcode('display_table', 'display_database_table');
 
-function display_database_table() {
-    // Database connection details
+function db_table_plugin_page() {
     global $wpdb;
-    $table_name = $wpdb->prefix . 'your_table_name'; // Update with your table name
-    
-    // Fetch data from the database
-    $results = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
+    $tables = $wpdb->get_col("SHOW TABLES");
 
-    if ($results) {
-        // Start table
-        $output = "<table border='1'>";
-        $output .= "<tr>";
+    // Handle form submission
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['table_name'])) {
+        $table_name = sanitize_text_field($_POST['table_name']);
+        update_option('db_table_display_table_name', $table_name);
+    }
 
-        // Table headers
-        foreach ($results[0] as $key => $value) {
-            $output .= "<th>{$key}</th>";
-        }
+    $selected_table = get_option('db_table_display_table_name');
 
-        $output .= "</tr>";
+    echo '<div class="wrap">';
+    echo '<h1>Database Table Display</h1>';
+    echo '<form method="post" action="">';
+    echo '<label for="table_name">Select Table:</label>';
+    echo '<select name="table_name" id="table_name">';
+    foreach ($tables as $table) {
+        $selected = ($table == $selected_table) ? 'selected' : '';
+        echo "<option value='$table' $selected>$table</option>";
+    }
+    echo '</select>';
+    echo '<input type="submit" value="Save" class="button button-primary">';
+    echo '</form>';
+    echo '</div>';
+}
 
-        // Table rows
-        foreach ($results as $row) {
+function display_database_table() {
+    global $wpdb;
+    $table_name = get_option('db_table_display_table_name');
+
+    if ($table_name) {
+        $results = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);
+
+        if ($results) {
+            // Start table
+            $output = "<table border='1'>";
             $output .= "<tr>";
-            foreach ($row as $value) {
-                $output .= "<td>{$value}</td>";
-            }
-            $output .= "</tr>";
-        }
 
-        $output .= "</table>";
+            // Table headers
+            foreach ($results[0] as $key => $value) {
+                $output .= "<th>{$key}</th>";
+            }
+
+            $output .= "</tr>";
+
+            // Table rows
+            foreach ($results as $row) {
+                $output .= "<tr>";
+                foreach ($row as $value) {
+                    $output .= "<td>{$value}</td>";
+                }
+                $output .= "</tr>";
+            }
+
+            $output .= "</table>";
+        } else {
+            $output = "No data found.";
+        }
     } else {
-        $output = "No data found.";
+        $output = "Please select a table from the plugin settings.";
     }
 
     return $output;
