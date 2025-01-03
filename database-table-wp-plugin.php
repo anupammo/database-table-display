@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Dynamic Database Table Display
+Plugin Name: Database Table WP Plugin
 Description: A plugin to dynamically display data from any WordPress database table.
 Version: 1.01
 Author: Anupam Mondal
