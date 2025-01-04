@@ -65,26 +65,44 @@ function display_database_table() {
 
         if ($results) {
             // Start table
-            $output = "<table class='db-table'>";
+            $output = "<div style='overflow-x:auto;'><table class='db-table'>";
             $output .= "<tr>";
-
-            // Table headers
-            foreach ($columns as $column) {
-                $output .= "<th>{$column}</th>";
-            }
-
+            $output .= "<th>Name</th>";
+            $output .= "<th>Home Address</th>";
+            $output .= "<th>Shop Name</th>";
+            $output .= "<th>Age</th>";
+            $output .= "<th>Sex</th>";
+            $output .= "<th>Aadhar Number</th>";
+            $output .= "<th>WhatsApp No</th>";
+//             $output .= "<th></th>";
             $output .= "</tr>";
+            
+			// Table rows
+			$cellCount = 0; // Initialize cell counter
+			$output .= "<tr>"; // Start the first row
+			foreach ($results as $row) {
+				foreach ($columns as $column) {
+					$cellCount++;
+					// $output .= "<td>{$row[$column]}</td>";
+										
+					if ($cellCount % 8 == 0) {						
+						$output .= " ";
+						// $output .= "<td style='display:none;'>{$row[$column]}</td>";
+					} else {
+						$output .= "<td>{$row[$column]}</td>";
+					}
+					
+					// Check if 8 cells have been added
+					if ($cellCount % 8 == 0) {
+						$output .= "</tr><tr>"; // Close the current row and start a new one
+					}
+				}
+			}
+			$output .= "</tr>"; // Close the last row
 
-            // Table rows
-            foreach ($results as $row) {
-                $output .= "<tr>";
-                foreach ($columns as $column) {
-                    $output .= "<td>{$row[$column]}</td>";
-                }
-                $output .= "</tr>";
-            }
 
-            $output .= "</table>";
+			
+            $output .= "</table></div>";
         } else {
             $output = "No data found.";
         }
