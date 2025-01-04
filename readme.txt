@@ -1,4 +1,4 @@
-Plugin Name: Dynamic Database Table Display 
+Plugin Name: Database Table WP Plugin 
 Plugin URI: https://github.com/anupammo/database-table-wp-plugin 
 Description: A plugin to dynamically display specific columns from any WordPress database table 
 Version: 1.03 
