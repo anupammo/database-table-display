@@ -2,7 +2,7 @@
 /*
 Plugin Name: Database Table WP Plugin
 Description: A plugin to dynamically display specific columns from any WordPress database table.
-Version: 1.02
+Version: 1.03
 Author: Anupam Mondal
 Author URI: https://anupammondal.in 
 Text Domain: dynamic-database-table-display 
