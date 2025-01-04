@@ -4,6 +4,13 @@ Plugin Name: Database Table WP Plugin
 Description: A plugin to dynamically display specific columns from any WordPress database table.
 Version: 1.02
 Author: Anupam Mondal
+Author URI: https://anupammondal.in 
+Text Domain: dynamic-database-table-display 
+License: GPL2 or later 
+Tags: database, table, display, dynamic 
+Requires at least: 5.0 
+Tested up to: 6.7.1 
+Requires PHP: 7.0
 */
 
 // Hook to add the admin menu
