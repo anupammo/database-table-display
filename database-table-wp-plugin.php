@@ -1,16 +1,18 @@
 <?php
 /*
 Plugin Name: Database Table WP Plugin
+Plugin URI: https://github.com/anupammo/database-table-wp-plugin
 Description: A plugin to dynamically display specific columns from any WordPress database table.
 Version: 1.03
-Author: Anupam Mondal
-Author URI: https://anupammondal.in 
-Text Domain: database-table-wp-plugin 
-License: GPL2 or later 
-Tags: database, table, display, dynamic 
 Requires at least: 5.0 
 Tested up to: 6.7.1 
 Requires PHP: 7.0
+Author: Anupam Mondal
+Author URI: https://anupammondal.in 
+License: GPL2 or later 
+License URI:https://github.com/anupammo/database-table-wp-plugin/blob/main/LICENSE 
+Text Domain: database-table-wp-plugin 
+Tags: database, table, display, dynamic 
 */
 
 // Hook to add the admin menu
