@@ -1,38 +1,40 @@
 <?php
 /*
-Plugin Name: Database Table WP Plugin
-Plugin URI: https://github.com/anupammo/database-table-wp-plugin
-Description: A plugin to dynamically display specific columns from any WordPress database table.
+Plugin Name: Database Table Display
+Plugin URI: https://github.com/anupammo/database-table-display
+Description: A tool to dynamically display specific columns from any WordPress database table.
 Version: 1.03
+Stable Tag: 1.03
 Requires at least: 5.0 
 Tested up to: 6.7.1 
 Requires PHP: 7.0
 Author: Anupam Mondal
 Author URI: https://anupammondal.in 
-License: GPL2 or later 
-License URI:https://github.com/anupammo/database-table-wp-plugin/blob/main/LICENSE 
-Text Domain: database-table-wp-plugin 
+License: GPL3
+License URI: https://github.com/anupammo/database-table-display/blob/main/LICENSE 
+Text Domain: database-table-display-main
 Tags: database, table, display, dynamic 
 */
 
+
 // Hook to add the admin menu
-add_action('admin_menu', 'db_table_plugin_menu');
+add_action('admin_menu', 'db_table_display_menu');
 
 // Hook to add the shortcode
 add_shortcode('display_table', 'display_database_table');
 
 // Hook to enqueue the CSS file
-add_action('wp_enqueue_scripts', 'db_table_plugin_enqueue_styles');
+add_action('wp_enqueue_scripts', 'db_table_display_enqueue_styles');
 
-function db_table_plugin_enqueue_styles() {
-    wp_enqueue_style('db-table-plugin-styles', plugin_dir_url(__FILE__) . 'styles.css');
+function db_table_display_enqueue_styles() {
+    wp_enqueue_style('db-table-display-styles', plugin_dir_url(__FILE__) . 'styles.css');
 }
 
-function db_table_plugin_menu() {
-    add_menu_page('Database Table Display', 'DB Table Display', 'manage_options', 'db-table-display', 'db_table_plugin_page');
+function db_table_display_menu() {
+    add_menu_page('Database Table Display', 'DB Table Display', 'manage_options', 'db-table-display', 'db_table_display_page');
 }
 
-function db_table_plugin_page() {
+function db_table_display_page() {
     global $wpdb;
     $tables = $wpdb->get_col("SHOW TABLES");
 
@@ -51,7 +53,7 @@ function db_table_plugin_page() {
     echo '<select name="table_name" id="table_name">';
     foreach ($tables as $table) {
         $selected = ($table == $selected_table) ? 'selected' : '';
-        echo "<option value='$table' $selected>$table</option>";
+        echo '<option value="' . esc_attr( $table ) . '" ' . selected( $selected, true, false ) . '>' . esc_html( $table ) . '</option>';
     }
     echo '</select>';
     echo '<input type="submit" value="Save" class="button button-primary">';
@@ -65,7 +67,6 @@ function display_database_table() {
 
     if ($table_name) {
         // Specify the columns you want to display
-        // $columns = ['column1', 'column2', 'column3']; // Update with your column names
         $columns = ['meta_value']; // Update with your column names
 
         // Create the SQL query
@@ -83,34 +84,28 @@ function display_database_table() {
             $output .= "<th>Sex</th>";
             $output .= "<th>Aadhar Number</th>";
             $output .= "<th>WhatsApp No</th>";
-//             $output .= "<th></th>";
             $output .= "</tr>";
             
-			// Table rows
-			$cellCount = 0; // Initialize cell counter
-			$output .= "<tr>"; // Start the first row
-			foreach ($results as $row) {
-				foreach ($columns as $column) {
-					$cellCount++;
-					// $output .= "<td>{$row[$column]}</td>";
-										
-					if ($cellCount % 8 == 0) {						
-						$output .= " ";
-						// $output .= "<td style='display:none;'>{$row[$column]}</td>";
-					} else {
-						$output .= "<td>{$row[$column]}</td>";
-					}
-					
-					// Check if 8 cells have been added
-					if ($cellCount % 8 == 0) {
-						$output .= "</tr><tr>"; // Close the current row and start a new one
-					}
-				}
-			}
-			$output .= "</tr>"; // Close the last row
+            // Table rows
+            $cellCount = 0; // Initialize cell counter
+            $output .= "<tr>"; // Start the first row
+            foreach ($results as $row) {
+                foreach ($columns as $column) {
+                    $cellCount++;
+                    if ($cellCount % 8 == 0) {                        
+                        $output .= " ";
+                    } else {
+                        $output .= "<td>{$row[$column]}</td>";
+                    }
 
+                    // Check if 8 cells have been added
+                    if ($cellCount % 8 == 0) {
+                        $output .= "</tr><tr>"; // Close the current row and start a new one
+                    }
+                }
+            }
+            $output .= "</tr>"; // Close the last row
 
-			
             $output .= "</table></div>";
         } else {
             $output = "No data found.";
