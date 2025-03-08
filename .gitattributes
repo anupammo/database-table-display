@@ -1,2 +1,0 @@
-# Exclude .gitignore from the zip archive
-.gitignore export-ignore
