@@ -35,7 +35,12 @@ function db_table_display_menu() {
 
 function db_table_display_page() {
     global $wpdb;
-    $tables = $wpdb->get_col("SHOW TABLES");
+    $tables = wp_cache_get('db_tables');
+
+    if (false === $tables) {
+        $tables = $wpdb->get_col("SHOW TABLES");
+        wp_cache_set('db_tables', $tables);
+    }
 
     // Handle form submission
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['table_name'])) {
@@ -52,7 +57,7 @@ function db_table_display_page() {
     echo '<select name="table_name" id="table_name">';
     foreach ($tables as $table) {
         $selected = ($table == $selected_table) ? 'selected' : '';
-        echo '<option value="' . esc_attr( $table ) . '" ' . selected( $selected, true, false ) . '>' . esc_html( $table ) . '</option>';
+        echo '<option value="' . esc_attr($table) . '" ' . selected($selected, true, false) . '>' . esc_html($table) . '</option>';
     }
     echo '</select>';
     echo '<input type="submit" value="Save" class="button button-primary">';
@@ -65,12 +70,20 @@ function display_database_table() {
     $table_name = get_option('db_table_display_table_name');
 
     if ($table_name) {
-        // Specify the columns you want to display
-        $columns = ['meta_value']; // Update with your column names
+        $cached_results = wp_cache_get('db_table_results_' . $table_name);
 
-        // Create the SQL query
-        $column_string = implode(', ', $columns);
-        $results = $wpdb->get_results("SELECT $column_string FROM $table_name", ARRAY_A);
+        if (false === $cached_results) {
+            // Specify the columns you want to display
+            $columns = ['meta_value']; // Update with your column names
+
+            // Create the SQL query
+            $column_string = implode(', ', $columns);
+            $results = $wpdb->get_results($wpdb->prepare("SELECT $column_string FROM %s", $table_name), ARRAY_A);
+
+            wp_cache_set('db_table_results_' . $table_name, $results);
+        } else {
+            $results = $cached_results;
+        }
 
         if ($results) {
             // Start table
@@ -84,14 +97,14 @@ function display_database_table() {
             $output .= "<th>Aadhar Number</th>";
             $output .= "<th>WhatsApp No</th>";
             $output .= "</tr>";
-            
+
             // Table rows
             $cellCount = 0; // Initialize cell counter
             $output .= "<tr>"; // Start the first row
             foreach ($results as $row) {
                 foreach ($columns as $column) {
                     $cellCount++;
-                    if ($cellCount % 8 == 0) {                        
+                    if ($cellCount % 8 == 0) {
                         $output .= " ";
                     } else {
                         $output .= "<td>{$row[$column]}</td>";
