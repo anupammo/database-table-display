@@ -16,7 +16,6 @@ Text Domain: database-table-display-main
 Tags: database, table, display, dynamic 
 */
 
-
 // Hook to add the admin menu
 add_action('admin_menu', 'db_table_display_menu');
 
@@ -27,7 +26,7 @@ add_shortcode('display_table', 'display_database_table');
 add_action('wp_enqueue_scripts', 'db_table_display_enqueue_styles');
 
 function db_table_display_enqueue_styles() {
-    wp_enqueue_style('db-table-display-styles', plugin_dir_url(__FILE__) . 'styles.css');
+    wp_enqueue_style('db-table-display-styles', plugin_dir_url(__FILE__) . 'styles.css', array(), '1.03'); // Version parameter added
 }
 
 function db_table_display_menu() {
