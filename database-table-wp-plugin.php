@@ -16,19 +16,6 @@ Text Domain: database-table-display-main
 Tags: database, table, display, dynamic 
 */
 
-// Include the Update Checker library
-require 'path-to-plugin-update-checker/plugin-update-checker.php';
-
-// Initialize the update checker
-$updateChecker = Puc_v4_Factory::buildUpdateChecker(
-    'https://github.com/anupammo/database-table-display/', // Replace with your repository URL
-    __FILE__, // Full path to the main plugin file or functions.php
-    'database-table-display' // Plugin slug. Must be unique.
-);
-
-// Optional: Set the branch that contains the stable release.
-$updateChecker->setBranch('main'); // The name of the branch. Defaults to 'main'.
-
 // Hook to add the admin menu
 add_action('admin_menu', 'db_table_display_menu');
 
