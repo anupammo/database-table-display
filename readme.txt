@@ -9,6 +9,9 @@ Stable tag: 1.03
 License: GPLv3
 License URI: https://github.com/anupammo/database-table-display/blob/main/LICENSE
 
+== Short Description ==
+A tool to dynamically display specific columns from any WordPress database table.
+
 == Description ==
 A tool to dynamically display specific columns from any WordPress database table.
 
