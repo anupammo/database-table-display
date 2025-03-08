@@ -43,9 +43,13 @@ function db_table_display_page() {
     }
 
     // Handle form submission
-    if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['table_name'])) {
-        $table_name = sanitize_text_field($_POST['table_name']);
-        update_option('db_table_display_table_name', $table_name);
+    if (isset($_SERVER['REQUEST_METHOD']) && 'POST' === $_SERVER['REQUEST_METHOD']) {
+        check_admin_referer('db_table_display_nonce_action', 'db_table_display_nonce_name');
+
+        if (!empty($_POST['table_name'])) {
+            $table_name = sanitize_text_field(wp_unslash($_POST['table_name']));
+            update_option('db_table_display_table_name', $table_name);
+        }
     }
 
     $selected_table = get_option('db_table_display_table_name');
@@ -53,6 +57,7 @@ function db_table_display_page() {
     echo '<div class="wrap">';
     echo '<h1>Database Table Display</h1>';
     echo '<form method="post" action="">';
+    wp_nonce_field('db_table_display_nonce_action', 'db_table_display_nonce_name');
     echo '<label for="table_name">Select Table:</label>';
     echo '<select name="table_name" id="table_name">';
     foreach ($tables as $table) {
